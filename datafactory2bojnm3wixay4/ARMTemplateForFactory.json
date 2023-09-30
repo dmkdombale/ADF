@@ -524,7 +524,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "input",
 						"fileSystem": "datafactory"
 					},
 					"columnDelimiter": ",",
