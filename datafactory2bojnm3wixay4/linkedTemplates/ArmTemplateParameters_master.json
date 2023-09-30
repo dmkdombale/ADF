@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datafactory2bojnm3wixay4"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://msadfdemostorage.dfs.core.windows.net/"
+		},
+		"ls_AzureSqlDatabase_properties_typeProperties_connectionString_secretName": {
+			"value": "mssql-apd-conenction-string"
+		},
+		"ls_azure_blob_storage_properties_typeProperties_connectionString_secretName": {
+			"value": "ms-storage-key"
+		},
+		"ls_keyvault_properties_typeProperties_baseUrl": {
+			"value": "https://keyvalutapd.vault.azure.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
