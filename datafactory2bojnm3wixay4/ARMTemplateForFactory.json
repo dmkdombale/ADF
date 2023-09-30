@@ -1074,7 +1074,6 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     purgeFiles: true,",
 						"     wildcardPaths:['input/*.csv']) ~> Employee",
 						"source(output(",
 						"          EmpID as integer,",
