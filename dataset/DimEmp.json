@@ -9,52 +9,52 @@
 		"type": "AzureSqlTable",
 		"schema": [
 			{
-				"name": "EmpID",
-				"type": "int",
-				"precision": 10
+				"name": "empId",
+				"type": "bigint",
+				"precision": 19
 			},
 			{
-				"name": "surrogatekey",
-				"type": "nvarchar"
+				"name": "surogateKey",
+				"type": "bigint",
+				"precision": 19
 			},
 			{
-				"name": "Region",
-				"type": "nvarchar"
+				"name": "region",
+				"type": "char"
 			},
 			{
-				"name": "Status",
-				"type": "nvarchar"
+				"name": "status",
+				"type": "char"
 			},
 			{
-				"name": "EmpFunction",
-				"type": "nvarchar"
+				"name": "fun",
+				"type": "char"
 			},
 			{
-				"name": "Level",
-				"type": "nvarchar"
+				"name": "level",
+				"type": "char"
 			},
 			{
-				"name": "Role",
-				"type": "nvarchar"
+				"name": "startDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			},
 			{
-				"name": "StartDate",
-				"type": "date"
-			},
-			{
-				"name": "EndDate",
-				"type": "date"
-			},
-			{
-				"name": "iscurrent",
-				"type": "int",
-				"precision": 10
+				"name": "enddate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
 			},
 			{
 				"name": "processtime",
 				"type": "datetime",
 				"precision": 23,
 				"scale": 3
+			},
+			{
+				"name": "iscurreent",
+				"type": "bit"
 			}
 		],
 		"typeProperties": {
