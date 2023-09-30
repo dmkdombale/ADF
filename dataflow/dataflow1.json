@@ -1,0 +1,256 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "EmployeeCsv",
+						"type": "DatasetReference"
+					},
+					"name": "Employee"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimEmp",
+						"type": "DatasetReference"
+					},
+					"name": "DimEmpTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DimEmp",
+						"type": "DatasetReference"
+					},
+					"name": "sinkNew"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimEmp",
+						"type": "DatasetReference"
+					},
+					"name": "sinkUpdtae"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimEmp",
+						"type": "DatasetReference"
+					},
+					"name": "sinkInactive"
+				}
+			],
+			"transformations": [
+				{
+					"name": "NullFilter"
+				},
+				{
+					"name": "TypeConversionsAndSetAttrs"
+				},
+				{
+					"name": "TypeConversion"
+				},
+				{
+					"name": "LookupIDs"
+				},
+				{
+					"name": "NormNames"
+				},
+				{
+					"name": "ConditionalSplit1"
+				},
+				{
+					"name": "SetAttrsForNew"
+				},
+				{
+					"name": "NameNorm2"
+				},
+				{
+					"name": "checkForChanges"
+				},
+				{
+					"name": "SetAttrsUpdate"
+				},
+				{
+					"name": "SetAttrsInactive"
+				},
+				{
+					"name": "InactiveFields"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          EmpID as string,",
+				"          Region as string,",
+				"          Status as string,",
+				"          Function as string,",
+				"          Level as string,",
+				"          Role as string,",
+				"          StartDate as string,",
+				"          EndDate as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     purgeFiles: true,",
+				"     wildcardPaths:['input/*.csv']) ~> Employee",
+				"source(output(",
+				"          EmpID as integer,",
+				"          surrogatekey as string,",
+				"          Region as string,",
+				"          Status as string,",
+				"          EmpFunction as string,",
+				"          Level as string,",
+				"          Role as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          iscurrent as integer,",
+				"          processtime as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DimEmpTable",
+				"Employee filter(isNull(EmpID)) ~> NullFilter",
+				"NullFilter derive(EmpID = toInteger(EmpID),",
+				"          StartDate = toDate(StartDate, 'mm/dd/yyyy'),",
+				"          EndDate = toDate( EndDate, 'MM/dd/yyyy'),",
+				"          processtime = currentTimestamp()) ~> TypeConversionsAndSetAttrs",
+				"DimEmpTable derive(EmpID = toInteger(EmpID)) ~> TypeConversion",
+				"TypeConversionsAndSetAttrs, TypeConversion lookup(TypeConversionsAndSetAttrs@EmpID == TypeConversion@EmpID,",
+				"     multiple: true,",
+				"     broadcast: 'auto')~> LookupIDs",
+				"LookupIDs select(mapColumn(",
+				"          EmpID = TypeConversionsAndSetAttrs@EmpID,",
+				"          Region = Employee@Region,",
+				"          Status = Employee@Status,",
+				"          EmpFunction = Function,",
+				"          Level = Employee@Level,",
+				"          Role = Employee@Role,",
+				"          StartDate = TypeConversionsAndSetAttrs@StartDate,",
+				"          EndDate = TypeConversionsAndSetAttrs@EndDate,",
+				"          processtime = TypeConversionsAndSetAttrs@processtime,",
+				"          surrogatekey,",
+				"          iscurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> NormNames",
+				"NormNames split(isNull(iscurrent),",
+				"     disjoint: false) ~> ConditionalSplit1@(NewRow, CheckForUpdate)",
+				"ConditionalSplit1@NewRow derive(iscurrent = 1,",
+				"          surrogatekey = toString(crc32(EmpID,EmpFunction))) ~> SetAttrsForNew",
+				"ConditionalSplit1@CheckForUpdate select(mapColumn(",
+				"          EmpID,",
+				"          Region,",
+				"          Status,",
+				"          EmpFunction,",
+				"          Level,",
+				"          Role,",
+				"          StartDate,",
+				"          EndDate,",
+				"          processtime,",
+				"          surrogatekey,",
+				"          iscurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> NameNorm2",
+				"NameNorm2, TypeConversion exists(NameNorm2@EmpID==TypeConversion@EmpID,",
+				"     negate:false,",
+				"     broadcast: 'auto')~> checkForChanges",
+				"checkForChanges derive(iscurrent = 1) ~> SetAttrsUpdate",
+				"checkForChanges derive(iscurrent = 0) ~> SetAttrsInactive",
+				"SetAttrsInactive select(mapColumn(",
+				"          EmpID,",
+				"          Status,",
+				"          EndDate,",
+				"          processtime,",
+				"          iscurrent",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> InactiveFields",
+				"InactiveFields alterRow(updateIf(true())) ~> alterRow1",
+				"SetAttrsForNew sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          EmpID as integer,",
+				"          surrogatekey as string,",
+				"          Region as string,",
+				"          Status as string,",
+				"          EmpFunction as string,",
+				"          Level as string,",
+				"          Role as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          iscurrent as integer,",
+				"          processtime as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     batchSize: 50,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkNew",
+				"SetAttrsUpdate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          EmpID as integer,",
+				"          surrogatekey as string,",
+				"          Region as string,",
+				"          Status as string,",
+				"          EmpFunction as string,",
+				"          Level as string,",
+				"          Role as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          iscurrent as integer,",
+				"          processtime as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     batchSize: 50,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkUpdtae",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          EmpID as integer,",
+				"          surrogatekey as string,",
+				"          Region as string,",
+				"          Status as string,",
+				"          EmpFunction as string,",
+				"          Level as string,",
+				"          Role as string,",
+				"          StartDate as date,",
+				"          EndDate as date,",
+				"          iscurrent as integer,",
+				"          processtime as timestamp",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          EmpID,",
+				"          Status,",
+				"          EndDate,",
+				"          iscurrent,",
+				"          processtime",
+				"     )) ~> sinkInactive"
+			]
+		}
+	}
+}
