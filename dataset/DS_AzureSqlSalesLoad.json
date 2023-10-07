@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlSalesLoad",
+	"name": "DS_AzureSqlSalesLoad",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_AzureSqlDatabase",
