@@ -1,0 +1,9 @@
+{
+	"name": "copySalesDataToTable",
+	"properties": {
+		"folder": {
+			"name": "ch3"
+		},
+		"annotations": []
+	}
+}
