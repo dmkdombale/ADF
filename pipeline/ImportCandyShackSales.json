@@ -86,6 +86,11 @@
 								}
 							},
 							{
+								"source": {
+									"name": "SalesValue",
+									"type": "String",
+									"physicalType": "String"
+								},
 								"sink": {
 									"name": "SalesValueUSD",
 									"type": "Decimal",
