@@ -30,12 +30,56 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"preCopyScript": "truncate table duo.Sales_Load",
+						"preCopyScript": "truncate table dbo.Sales_Load",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['Month']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Company']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Sales'][0]['Product']"
+								},
+								"sink": {
+									"name": "Product",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Sales'][0]['ManufacturerProductCode']"
+								},
+								"sink": {
+									"name": "ManufacturerProductCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Sales'][0]['Units']"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Sales'][0]['Value']"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
 				},
 				"inputs": [
 					{
