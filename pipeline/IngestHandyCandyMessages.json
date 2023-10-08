@@ -15,8 +15,27 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "SampleData/HandyCandy",
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
 					"enableStaging": false
-				}
+				},
+				"inputs": [
+					{
+						"referenceName": "ABS_JSON_HandyCandy",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
