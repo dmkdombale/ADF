@@ -87,6 +87,10 @@
 							{
 								"source": {
 									"path": "$['Sales'][0]['Value']"
+								},
+								"sink": {
+									"name": "SalesValueUSD",
+									"type": "Decimal"
 								}
 							}
 						],
