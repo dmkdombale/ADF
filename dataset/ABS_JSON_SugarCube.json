@@ -1,0 +1,49 @@
+{
+	"name": "ABS_JSON_SugarCube",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azure_blob_storage",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ch3"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "SampleData/HandyCandy",
+				"container": "datafactory"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"TransactionId": {
+					"type": "string"
+				},
+				"TransactionDate": {
+					"type": "string"
+				},
+				"StoreId": {
+					"type": "string"
+				},
+				"Items": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"Product": {
+								"type": "string"
+							},
+							"Price": {
+								"type": "number"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
