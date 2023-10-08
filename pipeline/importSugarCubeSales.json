@@ -42,24 +42,16 @@
 							{
 								"source": {
 									"path": "$['Month']"
-								},
-								"sink": {
-									"name": "SalesMonth",
-									"type": "DateTime"
 								}
 							},
 							{
 								"source": {
 									"path": "$['Company']"
-								},
-								"sink": {
-									"name": "Retailer",
-									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Sales'][0]['Product']"
+									"path": "['Product']"
 								},
 								"sink": {
 									"name": "Product",
@@ -68,7 +60,7 @@
 							},
 							{
 								"source": {
-									"path": "$['Sales'][0]['ManufacturerProductCode']"
+									"path": "['ManufacturerProductCode']"
 								},
 								"sink": {
 									"name": "ManufacturerProductCode",
@@ -77,20 +69,12 @@
 							},
 							{
 								"source": {
-									"path": "$['Sales'][0]['Units']"
-								},
-								"sink": {
-									"name": "UnitsSold",
-									"type": "Int32"
+									"path": "['Units']"
 								}
 							},
 							{
 								"source": {
-									"path": "$['Sales'][0]['Value']"
-								},
-								"sink": {
-									"name": "SalesValueUSD",
-									"type": "Decimal"
+									"path": "['Value']"
 								}
 							}
 						],
