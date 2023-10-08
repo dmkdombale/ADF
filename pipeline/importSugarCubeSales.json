@@ -71,18 +71,26 @@
 									"path": "['Value']"
 								},
 								"sink": {
-									"name": "UnitsSold",
-									"type": "Int32"
+									"name": "SalesValueUSD",
+									"type": "Decimal"
 								}
 							},
 							{
 								"source": {
 									"path": "$['Month']"
+								},
+								"sink": {
+									"name": "SalesMonth",
+									"type": "DateTime"
 								}
 							},
 							{
 								"source": {
 									"path": "$['Company']"
+								},
+								"sink": {
+									"name": "Retailer",
+									"type": "String"
 								}
 							}
 						],
